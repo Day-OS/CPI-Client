@@ -5,41 +5,41 @@ import { PrivateSchema } from './store/PrivateSchema';
 import { MemoryStore } from './store/MemoryStore';
 import { FileStore } from './store/FileStore';
 
-export const PLAY_URL = 'https://play.cpavalanche.net/';
+export const PLAY_URL = 'https://play.cpimagined.net/';
 
 export type Store = {
-  public: BaseStore<PublicSchema>;
-  private: BaseStore<PrivateSchema>;
+    public: BaseStore<PublicSchema>;
+    private: BaseStore<PrivateSchema>;
 }
 
 export const defaultPublicValues: PublicSchema = {
-  url: PLAY_URL,
-  disableAds: false,
-  enableDiscordRPC: true,
-  enableDiscordRPCTracker: true,
-  lastLanguage: 'pt',
+    url: PLAY_URL,
+    disableAds: false,
+    enableDiscordRPC: true,
+    enableDiscordRPCTracker: true,
+    language: "en",
 };
 
 const createPublicStore = () => {
-  const publicStore = new ElectronStore<PublicSchema>({
-    name: 'preferences',
-    defaults: defaultPublicValues,  
-  });
+    const publicStore = new ElectronStore<PublicSchema>({
+        name: 'preferences',
+        defaults: defaultPublicValues,
+    });
 
-  return new FileStore<PublicSchema>(publicStore);
+    return new FileStore<PublicSchema>(publicStore);
 };
 
 const createPrivateStore = () => {
-  const privateStore = new MemoryStore<PrivateSchema>();
+    const privateStore = new MemoryStore<PrivateSchema>();
 
-  return privateStore;
+    return privateStore;
 };
 
 const createStore = (): Store => {
-  return {
-    public: createPublicStore(),
-    private: createPrivateStore(),
-  };
+    return {
+        public: createPublicStore(),
+        private: createPrivateStore(),
+    };
 };
 
 export default createStore;

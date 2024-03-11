@@ -1,46 +1,56 @@
 import { BrowserWindow, dialog } from "electron";
 import { Store } from "./store";
-import prompt from 'electron-prompt';
+import prompt from "electron-prompt";
+import { stringInject } from './stringinject';
+import { GAME_NAME } from "./discord/constants";
+
+// Change this to false if you want to disable the ability to change URLs
+export const ALLOW_URL_CHANGE = false;
 
 export const getUrlFromStore = (store: Store) => {
-  return store.public.get('url');
+    return store.public.get('url');
 };
 
 const setUrlFromStore = (store: Store, url: string) => {
-  store.public.set('url', url);
+    store.public.set('url', url);
 };
 
 const changeClubPenguinUrl = async (store: Store, mainWindow: BrowserWindow) => {
-  const url = getUrlFromStore(store);
+    if (!ALLOW_URL_CHANGE) {
+        return;
+    }
 
-  const confirmationResult = await dialog.showMessageBox(mainWindow, {
-    buttons: ['Sim', 'Não', 'Cancelar'],
-    title: 'Você realmente deseja alterar a URL do jogo?',
-    message: `A URL atual é: '${url}', após alterar essa URL a página irá reiniciar.`,
-  });
+    const url = getUrlFromStore(store);
+    const localizer = store.private.get('localizer');
 
-  if (confirmationResult.response !== 0) {
-    return;
-  }
+    const confirmationResult = await dialog.showMessageBox(mainWindow, {
+        buttons: localizer.__buttons(),
+        title: localizer.__('PROMPT_URL_CHANGE_TITLE'),
+        message: stringInject(localizer.__('PROMPT_URL_CHANGE_MSG'), [url]),
+    });
 
-  const result = await prompt({
-    title: 'Altere a URL do Club Penguin',
-    label: 'URL:',
-    value: url,
-    inputAttrs: {
-      type: 'url'
-    },
-    type: 'input',
+    if (confirmationResult.response !== 0) {
+        return;
+    }
 
-  }, mainWindow);
+    const result = await prompt({
+        title: stringInject(localizer.__('INPUT_URL_CHANGE_TITLE'), [GAME_NAME]),
+        label: localizer.__('INPUT_URL_CHANGE_MSG'),
+        value: url,
+        inputAttrs: {
+            type: 'url'
+        },
+        type: 'input',
 
-  if (result === null) {
-    return;
-  }
+    }, mainWindow);
 
-  setUrlFromStore(store, result);
+    if (result === null) {
+        return;
+    }
 
-  mainWindow.loadURL(result);
+    setUrlFromStore(store, result);
+
+    mainWindow.loadURL(result);
 };
 
 export default changeClubPenguinUrl;

@@ -1,79 +1,88 @@
 {
-  "name": "cpavalancheclient",
-  "version": "1.0.5",
-  "description": "CPAvalanche Client",
-  "main": "./compiled/main.js",
-  "scripts": {
-    "clean": "rimraf compiled/",
-    "copy-files": "copyfiles -u 1 assets/**/* assets/* assets/flash/PepperFlashPlayer.plugin/Contents/* assets/flash/PepperFlashPlayer.plugin/Contents/_CodeSignature/* assets/flash/PepperFlashPlayer.plugin/Contents/MacOs/* compiled/assets/",
-    "build-tsc": "yarn clean && tsc && yarn copy-files",
-    "start": "yarn build-tsc && electron ./compiled/main.js",
-    "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "build-win": "electron-builder build --win --publish never",
-    "build-mac": "electron-builder build --mac --publish never",
-    "build-linux": "electron-builder build --linux --x64 --publish never"
-  },
-  "bugs": {
-    "url": "https://github.com/Club-Penguin-Avalanche/CPA-Client/issues"
-  },
-  "homepage": "https://github.com/Club-Penguin-Avalanche/CPA-Client/#readme",
-  "repository": "https://github.com/Club-Penguin-Avalanche/CPA-Client",
-  "author": "renanrcp",
-  "license": "MIT",
-  "build": {
-    "electronDist": "node_modules/electron/dist",
-    "appId": "com.clubpenguin.avalanche.client",
-    "productName": "CPAvalanche Client",
-    "asar": "false",
-    "win": {
-      "publish": "github",
-      "artifactName": "CPAvalanche-Client-Setup-${version}.${ext}"
+    "name": "cpimagined",
+    "version": "1.1.0",
+    "description": "Desktop client for CPImagined!",
+    "main": "./compiled/main.js",
+    "scripts": {
+        "clean": "rimraf compiled/",
+        "copy-files": "copyfiles -u 1 assets/**/* assets/* assets/flash/PepperFlashPlayer.plugin/Contents/* assets/flash/PepperFlashPlayer.plugin/Contents/_CodeSignature/* assets/flash/PepperFlashPlayer.plugin/Contents/MacOs/* compiled/assets/",
+        "copy-localization": "copyfiles -u 1 src/localization/*.json compiled/",
+        "build-tsc": "yarn clean && tsc && yarn copy-files && yarn copy-localization",
+        "start": "yarn build-tsc && electron ./compiled/main.js",
+        "lint": "eslint -c .eslintrc --ext .ts ./src",
+        "build-win": "electron-builder build --win --publish never",
+        "build-mac": "electron-builder build --mac --publish never",
+        "build-linux": "electron-builder build --linux --x64 --publish never"
     },
-    "mac": {
-      "category": "game",
-      "icon": "./assets/icon.icns",
-      "artifactName": "CPAvalanche-Client-${version}.${ext}"
+    "bugs": {
+        "url": "https://github.com/CPImagined/CPI-Client/issues"
     },
-    "linux": {
-      "category": "game",
-      "publish": "github",
-      "target": [
-        "deb",
-        "AppImage"
-      ],
-      "icon": "./assets/icon.icns",
-      "maintainer": "renanrcp"
+    "homepage": "https://github.com/CPImagined/CPI-Client/#readme",
+    "repository": "https://github.com/CPImagined/CPI-Client",
+    "author": "renanrcp",
+    "contributors": [
+        "ooowoo",
+        "JeffTheRock"
+    ],
+    "license": "MIT",
+    "build": {
+        "electronDist": "node_modules/electron/dist",
+        "appId": "com.cpimagined.desktop",
+        "productName": "CPImagined Desktop",
+        "asar": "false",
+        "win": {
+            "publish": "github",
+            "artifactName": "CPImagined-Client-Setup-${version}.${ext}"
+        },
+        "mac": {
+            "category": "game",
+            "icon": "./assets/icon.icns",
+            "artifactName": "CPImagined-Client-${version}.${ext}"
+        },
+        "linux": {
+            "category": "game",
+            "publish": "github",
+            "target": [
+                "deb",
+                "AppImage"
+            ],
+            "icon": "./assets/icon.icns",
+            "maintainer": "renanrcp"
+        },
+        "appImage": {
+            "synopsis": "Club Penguin Imagined Client",
+            "description": "Club Penguin Flash Player client",
+            "category": "Games",
+            "artifactName": "CPImagined-Client-${version}.${ext}"
+        }
     },
-    "appImage": {
-      "synopsis": "Cliente do Club Penguin Avalanche",
-      "description": "Cliente que permite jogar CPAvalanche.",
-      "category": "Games",
-      "artifactName": "CPAvalanche-Client-${version}.${ext}"
-    }
-  },
-  "devDependencies": {
-    "@types/discord-rpc": "^4.0.3",
-    "@types/electron-prompt": "^1.6.1",
-    "@types/node": "^18.13.0",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
-    "copyfiles": "^2.4.1",
-    "electron": "^11.3.0",
-    "electron-builder": "23.0.2",
-    "eslint": "^8.34.0",
-    "eslint-plugin-prefer-arrow": "^1.2.3",
-    "rimraf": "^4.1.2",
-    "typescript": "^4.9.5"
-  },
-  "dependencies": {
-    "@cliqz/adblocker-electron": "^1.25.2",
-    "cross-fetch": "^3.1.5",
-    "discord-rpc": "^4.0.1",
-    "electron-fetch": "^1.9.1",
-    "electron-is-dev": "^2.0.0",
-    "electron-log": "^5.0.0-beta.16",
-    "electron-prompt": "^1.7.0",
-    "electron-store": "^8.1.0",
-    "electron-updater": "^5.3.0"
-  }
+    "devDependencies": {
+        "@types/discord-rpc": "^4.0.8",
+        "@types/electron-prompt": "^1.6.5",
+        "@types/node": "^20.11.19",
+        "@typescript-eslint/eslint-plugin": "^7.0.1",
+        "@typescript-eslint/parser": "^7.0.1",
+        "copyfiles": "^2.4.1",
+        "electron": "^11.5.0",
+        "electron-builder": "^24.9.1",
+        "eslint": "^8.56.0",
+        "eslint-plugin-prefer-arrow": "^1.2.3",
+        "rimraf": "^5.0.5",
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "discord-rpc": "^4.0.1",
+        "electron-fetch": "^1.9.1",
+        "electron-is-dev": "^3.0.1",
+        "electron-log": "^5.1.1",
+        "electron-prompt": "^1.7.0",
+        "electron-store": "^8.1.0",
+        "electron-updater": "^6.1.7"
+    },
+    "//": {
+        "This seems to need to be installed manually as it seems to try to download some components from the latest version (1.26.16) even though I'm specifying 1.25.2.": "We don't need to worry about it right now though so I'm leaving these out.",
+        "@cliqz/adblocker-electron": "^1.25.2",
+        "cross-fetch": "^4.0.0"
+    },
+    "packageManager": "yarn@4.1.0"
 }

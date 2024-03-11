@@ -1,24 +1,25 @@
 # CPAvalanche Client
 
-O client oficial do Club Penguin Avalanche!
-## Instalação 
+The official client of Club Penguin Avalanche!
+## Installation
 
-Os executáveis estão disponíveis em [releases](https://github.com/Club-Penguin-Avalanche/CPA-Client/releases/latest).
+The executables are available in [releases](https://github.com/Club-Penguin-Avalanche/CPA-Client/releases/latest).
 
 ## Features
 
-- Opção de alterar o URL para qualquer CPPS à escolha do usuário.
-- Opção de limpar o cache.
-- Reload e Reload sem cache.
-- Modo tela cheia.
-- É possível alterar o Zoom com `CmdOrControl +`, `CmdOrControl -` e `CmdOrContrl + 0`.
-- DevTools.
-- ADBlocker (vem desabilitado - **O CPA NÃO É MONETIZADO**).
-- Discord Rich Presence (vem habilitado).
-- Rastreamento de sala no Discord Rich Presence (vem habilitado).
+- Option to alter the URL for any CPPS at the user's discretion.
+- Option to clear the cache.
+- Reload and Reload without cache.
+- Fullscreen mode.
+- It is possible to alter the Zoom with `CmdOrControl +`, `CmdOrControl -` and `CmdOrControl + 0`.
+- Dev tools (inspect element).
+- Ad blocker (comes disabled - **CPA IS NOT MONETIZED**).
+- The ad blocker can be excluded from the build if unneeded.
+- Discord Rich Presence (comes enabled).
+- Discord Rich Presence room tracking (comes enabled).
 
-#### Alterador de URL
-Você também tem a opção de trocar a URL do jogo caso queira.
+#### URL Changer
+You also have the option to change the game's URL if you want.
 
 ![CPClient URL Setter menu](./readme/change_url_menu.png)
 <br>
@@ -27,17 +28,17 @@ Você também tem a opção de trocar a URL do jogo caso queira.
 ![CPClient URL Setter input](./readme/change_url_input.png)
 
 #### Ad Blocker
-É possível habilitar/desabilitar o Ad Blocker para obter uma jogabilidade mais fluída. 
+You can enable/disable the ad blocker for smoother gameplay.
 
-Essa função é irrelevante no __Club Penguin Avalanche__, pois este não possui ADs.
+This function is irrelevant in __Club Penguin Avalanche__, as it does not have ads.
 
 ![CPClient AdBlocker menu](./readme/adblock_menu.png)
 <br>
 
 #### Discord Rich Presense (com rastreamento de sala)
-O client possui função de Discord Rich Presence, que vem habilitada.
+The client has a Discord Rich Presence function, which is enabled.
 
-O client também pode rastrear a localização do usuário in-game através da Rich Presence. É possível usar a função de RPC com e sem o rastreamento.
+The client can also track the user's in-game location through Rich Presence. You can use the RPC function with and without tracking.
 
 ![CPClient Discord RPC menu](./readme/discord_menu.png)
 <br>
@@ -50,4 +51,4 @@ O client também pode rastrear a localização do usuário in-game através da R
 ![CPClient Discord RPC tracking live](./readme/discord_tracking_live.png)
 
 ### License
-Esse projeto usa a [MIT License](https://github.com/renanrcp/CPClient/blob/main/LICENSE).
+This project uses the [MIT License](https://github.com/renanrcp/CPClient/blob/main/LICENSE).

@@ -41,6 +41,12 @@ spec/.hash
 # Eslint Cache
 .eslintcache*
 
+# Visual Studio Code Editor Config
+.editorconfig
+
+# Yarn
+.yarn/
+
 # Generated native addon files
 /spec/fixtures/native-addon/echo/build/
 

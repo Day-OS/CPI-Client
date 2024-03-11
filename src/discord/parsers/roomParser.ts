@@ -4,177 +4,163 @@ import { Store } from "../../store";
 import { CPLocation, CPLocationType } from "../../store/DiscordState";
 import { getRoomsJsonFromParams, RoomsResponse } from "../requestHandler";
 
+type CPLocationOverride = {
+    room_name: string,
+    room_display_name: string,
+    room_key?: string,
+    room_type: CPLocationType,
+    room_match?: string,
+    name_included: boolean,
+    match_override: boolean
+}
+
+function roomLocationOverride(room_name: string, room_display_name?: string, room_key?: string, room_match?: string, name_included?: boolean, match_override?: boolean): CPLocationOverride {
+    if (name_included == undefined) {
+        name_included = false;
+    }
+
+    if (match_override == undefined) {
+        match_override = false;
+    }
+
+    return {room_name, room_display_name, room_key, room_type: CPLocationType.Room, room_match, name_included, match_override};
+}
+
+function gameLocationOverride(room_name: string, room_display_name?: string, room_key?: string, room_match?: string, name_included?: boolean, match_override?: boolean): CPLocationOverride {
+    if (name_included == undefined) {
+        name_included = false;
+    }
+
+    if (match_override == undefined) {
+        match_override = false;
+    }
+
+    return {room_name, room_display_name, room_key, room_type: CPLocationType.Game, room_match, name_included, match_override};
+}
+
 export const updateRooms = (store: Store, result: RoomsResponse) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rooms = Object.values(result.roomsJson) as any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rooms = Object.values(result.roomsJson) as any[];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const localizedRooms = result.localizedJson ? Object.values(result.localizedJson) as any[] : [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const localizedRooms = result.localizedJson ? Object.values(result.localizedJson) as any[] : [];
 
-  const cpLocations: CPLocation[] = [];
+    const cpLocations: CPLocation[] = [];
 
-  for (const room of rooms) {
-    const id = Number(room.room_id);
-    let name = String(room.display_name);
+    const localizer = store.private.get('localizer');
 
-    // When in an igloo the display name is 'igloo_card'.
-    if (name.toLowerCase() === 'igloo_card') {
-      name = 'Igloo';
-    }
+    // Some overrides to fix some room data due to Disney weirdness.
+    const locationOverrides: CPLocationOverride[] = [
+        roomLocationOverride('igloo', localizer.__('LOC_IGLOO')),
 
-    // Smoothie smash game name was incomplete.
-    if (name.toLowerCase() === 'smoothie') {
-      name = 'Smoothie Smash';
-    }
+        roomLocationOverride('dojo fire', localizer.__('LOC_DOJO_FIRE')),
+        roomLocationOverride('dojo water', localizer.__('LOC_DOJO_WATER')),
+        roomLocationOverride('dojo snow', localizer.__('LOC_DOJO_SNOW')),
 
-    // Fire, water and snow dojos has bugged names.
-    if (name.toLowerCase() === "dojo fire") {
-      name = 'Fire Dojo';
-    }
+        gameLocationOverride('snow', localizer.__('LOC_GAME_SNOW')),
+        gameLocationOverride('smoothie', localizer.__('LOC_GAME_SMOOTHIE')),
+        gameLocationOverride('sled race', undefined, '', 'sled'),
+        
+        gameLocationOverride('igloo_card', localizer.__('LOC_GAME_CARD')),
+        gameLocationOverride('system defender', undefined, undefined, 'tower'),
+        gameLocationOverride('bits and bolts', undefined, undefined, 'robots'),
+        gameLocationOverride('wave', undefined, undefined, 'waves'),
+        gameLocationOverride('biscuit', undefined, undefined, 'hydro'),
+        gameLocationOverride('puffle', undefined, undefined, 'roundup'),
+        gameLocationOverride('puffle rescue', undefined, undefined, 'rescue'),
+        gameLocationOverride('subgame', undefined, undefined, 'sub'),
+        gameLocationOverride('card jitsu', undefined, undefined, 'card'),
+        gameLocationOverride('fire sensei', undefined, undefined, 'senseifire'),
+        
+        gameLocationOverride('find four', undefined, undefined, 'four', true),
+        gameLocationOverride('treasure hunt', undefined, undefined, 'treasurehunt', true),
 
-    if (room.room_key.toLowerCase() === "dojowater") {
-      name = 'Water Dojo';
-    }
+        gameLocationOverride('mission', undefined, undefined, 'q', true, true)
+    ];
 
-    if (name.toLowerCase() === "cj snow dojo") {
-      name = 'Snow Dojo';
-    }
+    /*
+    This pulls the room names out of the corresponding rooms.jsonp
+    for the selected language.
+    */
 
-    // Snow Card Jitsu has empty display name.
-    if (room.name.toLowerCase() === 'snow') {
-      name = "Card'jitsu Snow";
-    }
+    for (const room of rooms) {
+        const room_id = Number(room.room_id);
+        let room_key = room.room_key ? String(room.room_key) : undefined;
+        let room_type;
 
-    let key = room.room_key ? String(room.room_key) : undefined;
+        let room_name = String(room.name);
+        let display_name = String(room.display_name);
 
-    let type = key ? CPLocationType.Room : CPLocationType.Game;
+        let room_match: string;
 
-    // For any reason sled race comes with the key 'party19'.
-    if (name.toLowerCase() === 'sled race') {
-      key = '';
-      type = CPLocationType.Game;
-    }
+        const locOverride: CPLocationOverride = locationOverrides.filter(override => {
+            // Room name matches override or display name includes room name override
+            return (override.room_name == room_name.toLowerCase()) || (override.name_included && display_name.toLowerCase().includes(override.room_name));
+        })[0];
 
-    // Igloo don't have 'room_key'.
-    if (name.toLowerCase() === 'igloo') {
-      type = CPLocationType.Room;
-    }
+        if (locOverride != undefined) {
+            // Found an override so we can override.
+            room_key = locOverride.room_key;
+            room_type = locOverride.room_type;
+            
+            if (!locOverride.match_override) {
+                // room name is used as the argument for overriding the match name.
+                room_name = locOverride.room_name;
+            }
 
-    let match: string;
-
-    if (key) {
-      match = key;
-    } else {
-      match = String(room.name.toLowerCase().replace(' ', ''));
-    }
-
-    // The match of the 'tic tac toe' minigame is 'tictactoe'.
-    if (name.toLowerCase().includes('tic tac toe')) {
-      match = 'tictactoe';
-    }
-
-    // The match of the 'find four' minigame is 'four'.
-    if (name.toLowerCase().includes('find four') && type === CPLocationType.Game) {
-      match = 'four';
-    }
-
-    // The match of the 'treasure hunt' minigame is 'treasurehunt'.
-    if (name.toLowerCase().includes('treasure hunt')) {
-      match = 'treasurehunt';
-    }
-
-    // If the game is a EPF quest we need to replace the 'mission' word to 'q' (quest) in match.
-    if (name.toLowerCase().includes('mission')) {
-      match = room.name.toLowerCase().replace('mission', 'q');
-    }
-
-    // The match of the 'sled race' minigame is 'sled'.
-    if (name.toLowerCase() === 'sled race') {
-      match = 'sled';
-    }
-
-    // The match of the 'system defender' minigame is 'sled'.
-    if (name.toLowerCase() === 'system defender') {
-      match = 'tower';
-    }
-
-    // The match of the 'bits and bolts' minigame is 'robots'.
-    if (name.toLowerCase() === 'bits and bolts') {
-      match = 'robots';
-    }
-
-    // The match of the "Catchin' Waves" minigame is 'waves'.
-    if (name.toLowerCase() === "catchin' waves") {
-      match = 'waves';
-    }
-
-    // The match of the 'Hydro Hopper' minigame is 'hydro'.
-    if (name.toLowerCase() === 'hydro hopper') {
-      match = 'hydro';
-    }
-
-    // The match of the 'Puffle Roundup' minigame is 'roundup'.
-    if (name.toLowerCase() === 'puffle roundup') {
-      match = 'roundup';
-    }
-
-    // The match of the 'Puffle Rescue' minigame is 'rescue'.
-    if (name.toLowerCase() === 'puffle rescue') {
-      match = 'rescue';
-    }
-
-    // The match of the 'Aqua Grabber' minigame is 'sub'.
-    if (name.toLowerCase() === 'aqua grabber') {
-      match = 'sub';
-    }
-
-    // The match of the 'card jitsu' minigame is 'card'.
-    if (name.toLowerCase() === 'card jitsu') {
-      match = 'card';
-    }
-
-    // The match of the 'fire sensei' room is 'card'.
-    if (name.toLowerCase() === 'fire sensei') {
-      match = 'senseifire';
-    }
-
-    // The match of the 'igloo' room is 'igloo'.
-    if (name.toLowerCase() === 'igloo') {
-      match = 'igloo';
-    }
-
-    // Sets the localized name if has
-    if (localizedRooms) {
-      const localizedName = localizedRooms.filter(localizedRoom => {
-        return room.display_name === localizedRoom.display_name;
-      })[0]?.name;
-
-      if (localizedName) {
-        if (localizedName !== '##igloo_card##') {
-          name = localizedName;
+            if (locOverride.room_display_name != undefined) {
+                display_name = locOverride.room_display_name;
+            }
+            
+            // Match should be room name override replaced w/ room match override
+            if (locOverride.match_override) {
+                room_match = room_name.toLowerCase().replace(locOverride.room_name, locOverride.room_match);
+            } else {
+                room_match = locOverride.room_match;
+            }
         } else {
-          name = "Iglu";
+            // No override for this one.
+            room_type = room_key ? CPLocationType.Room : CPLocationType.Game;
         }
-      }
+
+        if (room_match == undefined) {
+            // We didn't get a room_match from the override so we need to set it.
+            if (room_key != undefined) {
+                room_match = room_key;
+            } else {
+                room_match = room_name.toLowerCase().replace(' ', '');
+            }
+        }
+
+        // Sets the localized name if one exists.
+        // We can skip this if the display name was overridden.
+        if (localizedRooms && locOverride == undefined) {
+            const localizedName = localizedRooms.filter(localizedRoom => {
+                return room.display_name === localizedRoom.display_name;
+            })[0]?.name;
+            
+            if (localizedName != undefined) {
+                display_name = localizedName;
+            }
+        }
+
+        const cpLocation: CPLocation = {
+            room_id: room_id,
+            name: display_name,
+            room_key: room_key,
+            room_type: room_type,
+            match: room_match,
+        };
+
+        cpLocations.push(cpLocation);
     }
 
-    const cpLocation: CPLocation = {
-      id: id,
-      name: name,
-      key: key,
-      type: type,
-      match: match,
-    };
-
-    cpLocations.push(cpLocation);
-  }
-
-  setLocationsInStore(store, cpLocations);
+    setLocationsInStore(store, cpLocations);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseAndUpdateRooms = async (store: Store, mainWindow: BrowserWindow, params: any) => {
-  const result = await getRoomsJsonFromParams(store, mainWindow, params);
+    const result = await getRoomsJsonFromParams(store, mainWindow, params);
 
-  updateRooms(store, result);
+    updateRooms(store, result);
 };

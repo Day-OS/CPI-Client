@@ -1,17 +1,25 @@
 import { BrowserWindow, dialog } from "electron";
+import { Store } from "./store";
 
-const openDevTools = async (mainWindow: BrowserWindow) => {
-  const confirmationResult = await dialog.showMessageBox(mainWindow, {
-    buttons: ['Sim', 'Não', 'Cancelar'],
-    title: 'Você realmente deseja abrir o Dev Tools?',
-    message: `O Dev Tools pode conter informações sensíveis sobre sua sessão do jogo.`,
-  });
+const toggleDevTools = async (store: Store, mainWindow: BrowserWindow) => {
+    if (mainWindow.webContents.isDevToolsOpened()) {
+        mainWindow.webContents.closeDevTools();
+        return;
+    }
 
-  if (confirmationResult.response !== 0) {
-    return;
-  }
-  
-  mainWindow.webContents.openDevTools();
+    const localizer = store.private.get('localizer');
+
+    const confirmationResult = await dialog.showMessageBox(mainWindow, {
+        buttons: localizer.__buttons(),
+        title: localizer.__('PROMPT_DEV_TOOLS_TITLE'),
+        message: localizer.__('PROMPT_DEV_TOOLS_MSG'),
+    });
+
+    if (confirmationResult.response !== 0) {
+        return;
+    }
+
+    mainWindow.webContents.openDevTools();
 };
 
-export default openDevTools;
+export default toggleDevTools;
