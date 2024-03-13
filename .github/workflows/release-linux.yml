@@ -10,7 +10,7 @@ jobs:
 
     steps:
     - name: Wait for package update
-      uses: fountainhead/action-wait-for-check@v1.1.0
+      uses: ivan-sre/action-wait-for-check@v5.0.0
       id: wait-for-commit
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -30,7 +30,13 @@ jobs:
       with:
         node-version: 'latest'
 
-    - name: Restore dependencies
+    - name: Get corepack
+      run: npm install -g corepack
+
+    - name: Enable corepack
+      run: corepack enable
+
+    - name: Update yarn
       run: yarn install
 
     - name: Build Typescript
