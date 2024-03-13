@@ -1,16 +1,31 @@
-name: "build-mac"
+name: "build-win"
 on:
-  workflow_dispatch: {}
   release:
     types: ["published"]
 
 jobs:
   publish:
-    runs-on: macos-latest
+    runs-on: windows-latest
 
     steps:
+    - name: Wait for package update
+      uses: fountainhead/action-wait-for-check@v1.1.0
+      id: wait-for-commit
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        checkName: update
+        ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ref: "main"
+
     - name: Install Node.js, NPM and Yarn
       uses: actions/setup-node@v3
+      with:
+        node-version: 'latest'
+        architecture: 'x86'
 
     - name: Restore dependencies
       run: yarn install
@@ -18,25 +33,24 @@ jobs:
     - name: Build Typescript
       run: yarn build-tsc
 
-    - name: Build for MacOS
-      run: yarn build-mac
+    - name: Build for Windows
+      run: yarn build-win
       
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: artifacts
         path: |
-          ./dist/*.dmg
+          ./dist/*.exe
           ./dist/*.blockmap
-          ./dist/*.zip
-          ./dist/latest-mac.yml
+          ./dist/latest.yml
 
     - name: "Upload Artifacts to Release"
       uses: "ncipollo/release-action@v1"
       with:
         allowUpdates: true
         artifactErrorsFailBuild: true
-        artifacts: "dist/*.dmg,dist/*.blockmap,dist/*.zip,dist/latest-mac.yml"
+        artifacts: "dist/*.exe,dist/*.blockmap,dist/latest.yml"
         token: ${{ secrets.GITHUB_TOKEN }}
         omitBodyDuringUpdate: true
         omitNameDuringUpdate: true
