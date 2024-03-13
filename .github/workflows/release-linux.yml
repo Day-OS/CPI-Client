@@ -5,6 +5,7 @@ on:
 
 jobs:
   publish:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +17,7 @@ jobs:
         checkName: update
         ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         ref: "main"
@@ -25,7 +26,7 @@ jobs:
       run: . .github/release-changes.sh "${{ github.event.release.tag_name }}"
 
     - name: Install Node.js, NPM and Yarn
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 'latest'
 
@@ -42,9 +43,9 @@ jobs:
       run: mv ./dist/*.deb ./dist/cpimaginedclient_${{ env.version }}.deb
       
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: artifacts
+        name: artifacts_linux
         path: |
           ./dist/*.deb
           ./dist/*.AppImage
