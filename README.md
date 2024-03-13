@@ -26,7 +26,7 @@ The client can also track the user's in-game location through Rich Presence. You
 
 ![image](./readme/rpcmenu.png)
 
-![image](./readme/rpcconfim.png)
+![image](./readme/rpcconfirm.png)
 
 ![image](./readme/rpctrackingconfirm.png)
 
