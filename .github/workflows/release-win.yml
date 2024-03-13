@@ -28,8 +28,9 @@ jobs:
         node-version: 'latest'
         architecture: 'x86'
     
-    - name: Get corepack
-      run: npm install -g corepack
+    # Do we need to do this?
+    # - name: Get corepack
+    #   run: npm install -g corepack
 
     - name: Enable corepack
       run: corepack enable
