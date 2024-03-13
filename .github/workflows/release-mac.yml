@@ -1,4 +1,4 @@
-name: "build-mac"
+name: "Release-MacOS"
 on:
   release:
     types: ["published"]
