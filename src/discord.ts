@@ -141,14 +141,14 @@ const registerWindowReload = (store: Store, mainWindow: BrowserWindow) => {
 };
 
 export const startDiscordRPC = (store: Store, mainWindow: BrowserWindow) => {
-    /*if (!getDiscordRPCEnabledFromStore(store) || DISCORD_RPC_CLIENT_APP_ID === '0') {
+    if (!getDiscordRPCEnabledFromStore(store) || DISCORD_RPC_CLIENT_APP_ID === '0') {
         if (DISCORD_RPC_CLIENT_APP_ID === '0') {
             // This is mostly for debugging so we can test outside the Discord environment
             registerWindowReload(store, mainWindow);
             startRequestListener(store, mainWindow);
         }
         return;
-    }*/
+    }
 
     const gameName = GAME_NAME;
     const startTimestamp = new Date();
