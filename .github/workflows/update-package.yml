@@ -24,7 +24,7 @@ jobs:
         version: ${{ env.version }}
 
     - name: Commit Release Changes
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         branch: "main"
         commit_message: "Version ${{ env.version }} [deploy-skip]"
