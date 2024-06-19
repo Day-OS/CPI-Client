@@ -1272,7 +1272,7 @@ __metadata:
     electron-updater: "npm:^6.1.7"
     eslint: "npm:^8.56.0"
     eslint-plugin-prefer-arrow: "npm:^1.2.3"
-    node-gyp: "npm:10.0.1"
+    node-gyp: "patch:node-gyp@npm%3A10.0.1#~/patches/node-gyp-npm-10.0.1-48708ce70b.patch"
     rimraf: "npm:^5.0.5"
     typescript: "npm:^5.3.3"
   languageName: unknown
@@ -3142,7 +3142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:10.0.1, node-gyp@npm:latest":
+"node-gyp@npm:10.0.1":
   version: 10.0.1
   resolution: "node-gyp@npm:10.0.1"
   dependencies:
@@ -3159,6 +3159,26 @@ __metadata:
   bin:
     node-gyp: bin/node-gyp.js
   checksum: 10c0/abddfff7d873312e4ed4a5fb75ce893a5c4fb69e7fcb1dfa71c28a6b92a7f1ef6b62790dffb39181b5a82728ba8f2f32d229cf8cbe66769fe02cea7db4a555aa
+  languageName: node
+  linkType: hard
+
+"node-gyp@patch:node-gyp@npm%3A10.0.1#~/patches/node-gyp-npm-10.0.1-48708ce70b.patch":
+  version: 10.0.1
+  resolution: "node-gyp@patch:node-gyp@npm%3A10.0.1#~/patches/node-gyp-npm-10.0.1-48708ce70b.patch::version=10.0.1&hash=bb52b9"
+  dependencies:
+    env-paths: "npm:^2.2.0"
+    exponential-backoff: "npm:^3.1.1"
+    glob: "npm:^10.3.10"
+    graceful-fs: "npm:^4.2.6"
+    make-fetch-happen: "npm:^13.0.0"
+    nopt: "npm:^7.0.0"
+    proc-log: "npm:^3.0.0"
+    semver: "npm:^7.3.5"
+    tar: "npm:^6.1.2"
+    which: "npm:^4.0.0"
+  bin:
+    node-gyp: bin/node-gyp.js
+  checksum: 10c0/0fdc0b352b729e2f97b52e9f82d7316816a3f9374a2319689585646f35fafdce3362202cb2472b4734ab850676c04a6393b7be02d75f4d2b8c04448337aa09d8
   languageName: node
   linkType: hard
 
