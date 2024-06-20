@@ -1,0 +1,72 @@
+name: "EXPERIMENTAL TEST Build"
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: "latest"
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Update yarn
+        run: yarn install
+
+      - name: Build Typescript
+        run: yarn build-tsc
+
+      - name: Build for Windows
+        if: matrix.os == 'windows-latest'
+        run: yarn build-win
+
+      - name: Build for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: yarn build-linux
+
+      - name: Build for Mac
+        if: matrix.os == 'macos-latest'
+        run: yarn build-mac
+
+      - name: Upload Windows Artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts_windows
+          path: |
+            ./dist/*.exe
+            ./dist/*.blockmap
+            ./dist/latest.yml
+
+      - name: Upload Linux Artifacts
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts_linux
+          path: |
+            ./dist/*.deb
+            ./dist/*.AppImage
+            ./dist/latest-linux.yml
+
+      - name: Upload Mac Artifacts
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts_macos
+          path: |
+            ./dist/*.dmg
+            ./dist/*.blockmap
+            ./dist/*.zip
+            ./dist/latest-mac.yml
