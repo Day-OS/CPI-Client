@@ -26,7 +26,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 'latest'
-        architecture: 'x86'
+        # Why was this set?
+        # architecture: 'x86'
     
     # Do we need to do this?
     # - name: Get corepack
