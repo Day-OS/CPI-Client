@@ -1,6 +1,6 @@
 {
   "name": "cpimagined",
-  "version": "0.0.0",
+  "version": "release",
   "description": "Desktop client for CPImagined!",
   "main": "./compiled/main.js",
   "scripts": {
