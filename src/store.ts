@@ -5,7 +5,7 @@ import { PrivateSchema } from './store/PrivateSchema';
 import { MemoryStore } from './store/MemoryStore';
 import { FileStore } from './store/FileStore';
 
-export const PLAY_URL = 'https://play.cpimagined.net/';
+export const PLAY_URL = 'http://play.cpps.daytheipc.com';
 
 export type Store = {
     public: BaseStore<PublicSchema>;
@@ -17,7 +17,7 @@ export const defaultPublicValues: PublicSchema = {
     disableAds: false,
     enableDiscordRPC: true,
     enableDiscordRPCTracker: true,
-    language: "en",
+    language: "pt",
 };
 
 const createPublicStore = () => {
